@@ -22,7 +22,7 @@ rand_port(){ echo $((RANDOM % 55536 + 10000)); }
 rand_pass(){ openssl rand -base64 18 | tr -d '=+/' | cut -c1-20; }
 urlencode(){ local LC_ALL=C s="$1" o="" i c h; for ((i=0;i<${#s};i++)); do c=${s:i:1}; case "$c" in [a-zA-Z0-9.~_-]) o+="$c";; *) printf -v h '%%%02X' "'$c"; o+="$h";; esac; done; printf '%s' "$o"; }
 
-asset_regex(){ case "$(uname -m)" in x86_64|amd64) echo 'x86_64-unknown-linux-gnu\.tar\.xz$';; aarch64|arm64) echo 'aarch64-unknown-linux-gnu\.tar\.xz$';; armv7l|armv7*) echo 'armv7-unknown-linux-gnueabihf\.tar\.xz$';; *) err "暂不支持架构：$(uname -m)"; exit 1;; esac; }
+asset_regex(){ case "$(uname -m)" in x86_64|amd64) echo 'x86_64-unknown-linux-gnu\.tar\.xz$';; *) err "暂只支持 amd64/x86_64，当前架构：$(uname -m)"; exit 1;; esac; }
 latest_asset(){ local json url re; re="$(asset_regex)"; json="$(curl -fsSL https://api.github.com/repos/shadowsocks/shadowsocks-rust/releases/latest)"; url="$(printf '%s' "$json" | jq -r --arg re "$re" '.assets[] | select(.name|test($re)) | .browser_download_url' | head -n1)"; [[ -n "$url" && "$url" != null ]] || { err "未找到当前架构的 shadowsocks-rust Release 资产"; exit 1; }; echo "$url"; }
 install_ss(){ ensure_deps; local url tmp; url="$(latest_asset)"; tmp="$(mktemp -d)"; info "下载 shadowsocks-rust：$url"; curl -fL --retry 3 -o "$tmp/ss.tar.xz" "$url"; tar -xf "$tmp/ss.tar.xz" -C "$tmp"; install -m 0755 "$tmp/ssserver" "$BIN"; rm -rf "$tmp"; mkdir -p "$CONFIG_DIR"; if [[ ! -s "$CONFIG_FILE" ]]; then read -rp "请输入 ss-rust 监听端口（留空随机）: " port; port=${port:-$(rand_port)}; validate_port "$port" || { err "端口无效"; exit 1; }; read -rp "请输入 ss-rust 密码（留空随机）: " password; password=${password:-$(rand_pass)}; cat > "$CONFIG_FILE" <<EOF
 {

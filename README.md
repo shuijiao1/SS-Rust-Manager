@@ -6,4 +6,4 @@
 bash <(curl -fsSL https://raw.githubusercontent.com/shuijiao1/ss-rust-manager/main/ss-rust.sh)
 ```
 
-支持 `x86_64 / aarch64 / armv7l`，自动从 shadowsocks-rust 最新 Release 下载对应架构。
+仅支持 `amd64 / x86_64`，自动从 shadowsocks-rust 最新 Release 下载对应架构。
