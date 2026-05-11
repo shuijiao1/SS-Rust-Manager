@@ -5,7 +5,7 @@
 ## 一键运行
 
 ```bash
-curl -L -s ss.shuijiao.de > /root/ss-rust.sh && chmod +x /root/ss-rust.sh && ./ss-rust.sh
+bash <(curl -Ls https://ss.shuijiao.de)
 ```
 
 仅支持 `amd64 / x86_64`，自动从 shadowsocks-rust 最新 Release 下载对应架构。
