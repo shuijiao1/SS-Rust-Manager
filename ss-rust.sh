@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="0.1.2"
+VERSION="0.1.3"
 REPO_RAW="https://raw.githubusercontent.com/shuijiao1/SS-Rust-Manager/main"
 UPDATE_URL="$REPO_RAW/ss-rust.sh"
 VERSION_URL="$REPO_RAW/version.txt"
